@@ -184,6 +184,13 @@ export function Demo() {
                 matchDb={result.loudnessMatchDb}
               />
 
+              {player.error && (
+                <p className="notice notice--alert" role="alert">
+                  <span className="notice__label">Son</span>
+                  <span>{player.error}</span>
+                </p>
+              )}
+
               <Transport
                 playing={player.playing}
                 currentTime={player.currentTime}

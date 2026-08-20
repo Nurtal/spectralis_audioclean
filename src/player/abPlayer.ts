@@ -47,13 +47,21 @@ export class AbPlayer {
    */
   private ensureContext(): AudioContext {
     if (this.context) return this.context;
-    // On force 48 kHz pour que les tampons passent sans rééchantillonnage.
-    // Certains navigateurs refusent : on prend alors ce qu'ils proposent.
-    try {
-      this.context = new AudioContext({ sampleRate: 48_000, latencyHint: 'playback' });
-    } catch {
-      this.context = new AudioContext();
-    }
+    // Aucune option : on prend la fréquence de la carte son, quelle qu'elle soit.
+    //
+    // Le pipeline travaille à 48 kHz parce que RNNoise l'exige, et il serait
+    // tentant d'imposer la même fréquence au contexte de lecture pour éviter un
+    // rééchantillonnage. C'est une fausse économie : sur une sortie cadencée à
+    // 44.1 kHz — le cas le plus courant — forcer 48 kHz fait ouvrir à Chrome un
+    // flux que la couche audio du système doit reconvertir, et sous PulseAudio
+    // ou PipeWire ça donne au mieux de la latence, au pire du silence complet.
+    // Le contexte se déclare pourtant « running » et le graphe produit bien du
+    // signal : la panne est en aval, invisible depuis la page.
+    //
+    // Un AudioBufferSourceNode sait rééchantillonner un tampon dont la
+    // fréquence diffère de celle du contexte. On lui laisse ce travail : c'est
+    // le chemin standard, et il est le même pour tout le monde.
+    this.context = new AudioContext();
     return this.context;
   }
 
@@ -151,6 +159,11 @@ export class AbPlayer {
     if (!this.originalBuffer || !this.processedBuffer) return;
     const ctx = this.ensureContext();
     if (ctx.state === 'suspended') await ctx.resume();
+    if (ctx.state !== 'running') {
+      // Safari iOS refuse de démarrer hors d'un geste utilisateur. Mieux vaut
+      // le signaler que d'afficher une tête de lecture qui avance dans le vide.
+      throw new Error('Le navigateur a refusé de démarrer la lecture audio.');
+    }
 
     this.stopSources();
 

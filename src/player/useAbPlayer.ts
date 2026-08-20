@@ -7,6 +7,8 @@ export interface AbPlayerState {
   duration: number;
   side: AbSide;
   compensate: boolean;
+  /** Renseigné si le navigateur a refusé de démarrer la sortie audio. */
+  error: string | null;
 }
 
 export interface AbPlayerControls extends AbPlayerState {
@@ -37,6 +39,7 @@ export function useAbPlayer(): AbPlayerControls {
   const [duration, setDuration] = useState(0);
   const [side, setSideState] = useState<AbSide>('processed');
   const [compensate, setCompensateState] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   // Les réglages passent par des refs pour que `load` garde une identité
   // stable : sinon changer de côté rechargerait les tampons et remettrait la
   // lecture à zéro, ce qui est exactement l'inverse du but.
@@ -104,10 +107,19 @@ export function useAbPlayer(): AbPlayerControls {
   const play = useCallback(() => {
     const player = getPlayer();
     if (!player.ready) return;
-    void player.play().then(() => {
-      setPlaying(true);
-      startFrames();
-    });
+    player.play().then(
+      () => {
+        setError(null);
+        setPlaying(true);
+        startFrames();
+      },
+      (cause: unknown) => {
+        // Un échec de démarrage doit se voir. Laisser le bouton sur « Pause »
+        // et la tête de lecture immobile ferait croire à une panne de son.
+        setPlaying(false);
+        setError(cause instanceof Error ? cause.message : String(cause));
+      },
+    );
   }, [getPlayer, startFrames]);
 
   const pause = useCallback(() => {
@@ -149,6 +161,7 @@ export function useAbPlayer(): AbPlayerControls {
     setPlaying(false);
     setCurrentTime(0);
     setDuration(0);
+    setError(null);
   }, [stopFrames]);
 
   return {
@@ -157,6 +170,7 @@ export function useAbPlayer(): AbPlayerControls {
     duration,
     side,
     compensate,
+    error,
     load,
     play,
     pause,
