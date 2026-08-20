@@ -1,0 +1,68 @@
+.waveform {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.waveform__stage {
+  position: relative;
+  height: 168px;
+  background: var(--paper);
+  border: var(--hair);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.waveform__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.waveform__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.waveform__key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  transition: color var(--ab-transition) var(--ease);
+}
+
+/* La pastille porte la couleur du tracé, le texte sa variante lisible. */
+.waveform__key::before {
+  content: '';
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid var(--swatch);
+  background: var(--swatch);
+  opacity: 0.35;
+  transition: opacity var(--ab-transition) var(--ease);
+}
+
+.waveform__key--noise {
+  color: var(--noise-ink);
+  --swatch: var(--noise);
+}
+
+.waveform__key--signal {
+  color: var(--signal-ink);
+  --swatch: var(--signal);
+}
+
+.waveform__key[data-active='true'] {
+  font-weight: 500;
+}
+
+.waveform__key[data-active='true']::before {
+  opacity: 1;
+}
+
+.waveform__times {
+  margin-left: auto;
+  color: var(--ink-muted);
+}

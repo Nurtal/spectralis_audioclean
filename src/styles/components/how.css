@@ -1,0 +1,69 @@
+.how__list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-top: var(--hair);
+}
+
+.how__step {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--s-2) var(--s-4);
+  padding: var(--s-5) 0;
+  border-bottom: var(--hair);
+}
+
+@media (min-width: 56rem) {
+  .how__step {
+    grid-template-columns: 3rem minmax(0, 1fr) 14rem;
+    gap: var(--s-5);
+    align-items: start;
+  }
+}
+
+.how__index {
+  font-size: var(--step-1);
+  /* Décoratif, mais du texte quand même : il tient 4.5:1 comme le reste. */
+  color: var(--ink-faint);
+  line-height: 1.2;
+}
+
+.how__body {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.how__title {
+  font-family: var(--font-display);
+  font-stretch: 84%;
+  font-weight: 700;
+  font-size: var(--step-1);
+}
+
+.how__heard {
+  max-width: 52ch;
+}
+
+.how__done {
+  max-width: 62ch;
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.how__spec {
+  grid-column: 2;
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+  padding-top: 0.3rem;
+}
+
+@media (min-width: 56rem) {
+  .how__spec {
+    grid-column: 3;
+    text-align: right;
+  }
+}
+
+.how__foot {
+  margin-top: var(--s-6);
+}

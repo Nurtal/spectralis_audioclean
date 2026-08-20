@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spectralis — nettoyage de prises de voix, dans votre navigateur</title>
+    <meta
+      name="description"
+      content="Débruitage et mise au niveau d'enregistrements de voix. La démonstration s'exécute entièrement dans votre navigateur : aucun fichier n'est envoyé."
+    />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#dddcd4" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23dddcd4'/%3E%3Crect x='2' y='6' width='2' height='4' fill='%233f6795'/%3E%3Crect x='5' y='3' width='2' height='10' fill='%233f6795'/%3E%3Crect x='8' y='5' width='2' height='6' fill='%23d98e12'/%3E%3Crect x='11' y='2' width='2' height='12' fill='%23d98e12'/%3E%3C/svg%3E" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Spectralis — nettoyage de prises de voix" />
+    <meta
+      property="og:description"
+      content="Déposez un extrait, écoutez l'avant/après. Le fichier ne quitte pas votre machine."
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: sans-serif">
+        La démonstration a besoin de JavaScript : c'est lui qui fait tourner le traitement
+        audio dans votre navigateur, à la place d'un serveur. Écrivez-moi à
+        bonjour@spectralis.fr si vous préférez qu'on en parle directement.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

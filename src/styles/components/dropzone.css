@@ -1,0 +1,115 @@
+.dropzone {
+  display: grid;
+  gap: var(--s-5);
+}
+
+@media (min-width: 52rem) {
+  .dropzone {
+    grid-template-columns: 1.15fr 1fr;
+    gap: var(--s-6);
+    align-items: start;
+  }
+}
+
+.dropzone__target {
+  display: grid;
+  place-items: center;
+  min-height: 13rem;
+  padding: var(--s-6) var(--s-4);
+  /* Trait discontinu : la zone est une invitation, pas un cadre définitif. */
+  border: 1px dashed var(--rule-strong);
+  background: var(--paper);
+  text-align: center;
+  transition:
+    border-color 120ms var(--ease),
+    background-color 120ms var(--ease);
+}
+
+.dropzone__target[data-over='true'] {
+  border-color: var(--ink);
+  border-style: solid;
+  background: var(--signal-wash);
+}
+
+.dropzone__body {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.dropzone__lead {
+  font-size: var(--step-2);
+}
+
+.dropzone__or {
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.dropzone__browse {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.dropzone__specs {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.dropzone__samples {
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+}
+
+.dropzone__list {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: var(--hair);
+  background: var(--paper);
+}
+
+.dropzone__list li + li {
+  border-top: var(--hair);
+}
+
+.dropzone__sample {
+  display: grid;
+  gap: 0.15rem;
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  transition: background-color 120ms var(--ease);
+}
+
+.dropzone__sample:hover:not(:disabled) {
+  background: var(--signal-wash);
+}
+
+.dropzone__sample:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dropzone__sampleLabel {
+  font-size: var(--step--1);
+}
+
+.dropzone__sampleDefect {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+/* Une fois un fichier chargé, la zone cède la place aux analyses. */
+.dropzone--compact .dropzone__target {
+  min-height: 0;
+  padding: var(--s-4);
+}
+
+.dropzone--compact .dropzone__lead {
+  font-size: var(--step-1);
+}

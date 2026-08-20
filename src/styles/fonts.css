@@ -1,0 +1,59 @@
+/*
+ * Polices auto-hébergées, sous-ensemble latin uniquement.
+ *
+ * Un site dont l'argument est « vos données ne partent pas » ne peut pas
+ * appeler fonts.googleapis.com à chaque chargement. Les fichiers viennent des
+ * paquets @fontsource (les licences y sont) et sont émis par le bundler, donc
+ * versionnés et servis depuis la même origine.
+ *
+ * On ne déclare que le latin : il couvre é, è, ê, ç, ù et même œ (U+0152).
+ * Charger le cyrillique et le vietnamien sur un site en français, c'est
+ * quatorze fichiers de plus pour zéro caractère affiché.
+ *
+ * Archivo : Open Font License — SIL.
+ * Public Sans : Open Font License — SIL.
+ * IBM Plex Mono : Open Font License — SIL.
+ */
+
+@font-face {
+  font-family: 'Archivo Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  /* Axe de chasse : c'est lui qui donne la vraie condensation, cf. docs/design.md */
+  font-stretch: 62% 125%;
+  src: url('@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2')
+    format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/public-sans/files/public-sans-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('@fontsource/public-sans/files/public-sans-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}

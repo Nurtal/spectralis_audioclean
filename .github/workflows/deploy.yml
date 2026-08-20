@@ -1,0 +1,65 @@
+# Build et publication sur GitHub Pages.
+#
+# Le site est entièrement statique : il n'y a rien à héberger d'autre que le
+# contenu de dist/. Les tests tournent avant la construction — un test rouge
+# doit empêcher la publication, pas la précéder.
+name: Déploiement GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois. On ne coupe pas celle qui est en cours :
+# interrompre un déploiement à mi-course laisserait le site incohérent.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Construire
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # npm ci exécute le postinstall, qui copie RNNoise dans public/wasm/.
+      # Ces fichiers ne sont pas versionnés : ils viennent du paquet npm.
+      - name: Installer
+        run: npm ci
+
+      - name: Vérifier les types
+        run: npm run typecheck
+
+      - name: Tester
+        run: npm run test
+
+      - name: Construire
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Publier
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

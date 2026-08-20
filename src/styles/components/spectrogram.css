@@ -1,0 +1,135 @@
+.spectro {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.spectro__frame {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  border: var(--hair);
+  background: var(--paper);
+}
+
+.spectro__axis {
+  position: relative;
+  border-right: var(--hair);
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.spectro__axis span {
+  position: absolute;
+  right: var(--s-2);
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+.spectro__axis span::after {
+  content: '';
+  position: absolute;
+  right: calc(var(--s-2) * -1);
+  top: 50%;
+  width: var(--s-2);
+  border-top: 1px solid var(--rule);
+}
+
+.spectro__stage {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.spectro__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.spectro__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2.5rem;
+  margin-left: -1.25rem;
+  cursor: ew-resize;
+  display: grid;
+  place-items: center;
+}
+
+.spectro__grip {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--ink);
+  background: var(--card);
+  display: grid;
+  place-items: center;
+}
+
+.spectro__grip::before {
+  content: '↔';
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.spectro__handle:focus-visible {
+  outline: none;
+}
+
+.spectro__handle:focus-visible .spectro__grip {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.spectro__tag {
+  position: absolute;
+  top: var(--s-2);
+  z-index: 1;
+  padding: 0.1rem var(--s-2);
+  font-size: var(--step--2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  color: var(--ink-muted);
+  pointer-events: none;
+  transition:
+    color var(--ab-transition) var(--ease),
+    border-color var(--ab-transition) var(--ease);
+}
+
+.spectro__tag--left {
+  left: var(--s-2);
+}
+
+.spectro__tag--right {
+  right: var(--s-2);
+}
+
+.spectro__tag--left[data-active='true'] {
+  color: var(--noise-ink);
+  border-color: var(--noise);
+}
+
+.spectro__tag--right[data-active='true'] {
+  color: var(--signal-ink);
+  border-color: var(--signal);
+}
+
+.spectro__caption {
+  font-size: var(--step--2);
+  line-height: 1.5;
+  color: var(--ink-faint);
+  max-width: 68ch;
+}
+
+@media (max-width: 40rem) {
+  .spectro__frame {
+    grid-template-columns: 2.75rem 1fr;
+  }
+
+  .spectro__stage {
+    height: 200px;
+  }
+}

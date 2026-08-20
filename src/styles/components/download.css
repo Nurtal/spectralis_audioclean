@@ -1,0 +1,10 @@
+.download {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: start;
+}
+
+.download__note {
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}

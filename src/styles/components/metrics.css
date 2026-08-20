@@ -1,0 +1,118 @@
+.metrics__title {
+  font-family: var(--font-display);
+  font-stretch: 84%;
+  font-size: var(--step-1);
+  font-weight: 700;
+}
+
+/*
+ * Un tableau de mesures ne se plie pas : les colonnes de chiffres doivent
+ * rester alignées et lisibles. Sur mobile il défile donc dans son propre
+ * cadre, plutôt que d'élargir la page entière.
+ */
+.metrics__scroll {
+  overflow-x: auto;
+}
+
+.metrics__table {
+  width: 100%;
+  min-width: 20rem;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+
+.metrics__table th,
+.metrics__table td {
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: baseline;
+}
+
+.metrics__table tbody tr:last-child th,
+.metrics__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.metrics__table thead th {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding-block: var(--s-2);
+}
+
+.metrics__table tbody th {
+  font-weight: 400;
+  padding-right: var(--s-5);
+}
+
+.metrics__num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Les deux colonnes portent la couleur de leur côté : c'est le même code que
+   sur la waveform et la bascule, on ne le réapprend qu'une fois. */
+.metrics__before {
+  color: var(--noise-ink);
+}
+
+.metrics__after {
+  color: var(--signal-ink);
+}
+
+.metrics__label {
+  display: block;
+}
+
+.metrics__hint {
+  display: block;
+  font-size: var(--step--2);
+  line-height: 1.4;
+  color: var(--ink-faint);
+  max-width: 34ch;
+}
+
+.metrics__unit {
+  color: var(--ink-faint);
+}
+
+td[data-direction='better'] {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+td[data-direction='better']::after {
+  content: ' ↑';
+  color: var(--signal);
+}
+
+td[data-direction='worse']::after {
+  content: ' ↓';
+  color: var(--alert);
+}
+
+td[data-direction='flat'] {
+  color: var(--ink-muted);
+}
+
+.metrics__foot {
+  padding: var(--s-3) var(--s-4);
+  border-top: var(--hair);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+@media (max-width: 40rem) {
+  .metrics__hint {
+    display: none;
+  }
+
+  .metrics__table th,
+  .metrics__table td {
+    padding: var(--s-2) var(--s-3);
+  }
+}

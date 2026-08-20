@@ -1,0 +1,99 @@
+.transport {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.transport__play {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  border: var(--hair-ink);
+  background: var(--ink);
+  color: var(--card);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  min-width: 9.5rem;
+  transition:
+    background-color 120ms var(--ease),
+    color 120ms var(--ease);
+}
+
+.transport__play:hover:not(:disabled) {
+  background: transparent;
+  color: var(--ink);
+}
+
+.transport__play:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Les glyphes sont dessinés en CSS : deux formes, aucune requête. */
+.glyph {
+  display: block;
+  width: 0.75rem;
+  height: 0.85rem;
+  background: currentColor;
+}
+
+.glyph--play {
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.glyph--pause {
+  position: relative;
+  background: none;
+}
+
+.glyph--pause::before,
+.glyph--pause::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 34%;
+  background: currentColor;
+}
+
+.glyph--pause::before {
+  left: 0;
+}
+
+.glyph--pause::after {
+  right: 0;
+}
+
+.transport__time {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-size: var(--step-1);
+}
+
+.transport__sep,
+.transport__total {
+  color: var(--ink-faint);
+}
+
+.transport__hint {
+  margin-left: auto;
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.transport__hint kbd {
+  font-family: inherit;
+  padding: 0.05rem 0.35rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+@media (max-width: 46rem) {
+  .transport__hint {
+    display: none;
+  }
+}

@@ -1,0 +1,118 @@
+.ab {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.ab__group {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0;
+  margin: 0;
+  border: var(--hair-ink);
+  background: var(--paper);
+  isolation: isolate;
+}
+
+/* Le bloc plein qui glisse d'une position à l'autre. Il porte la couleur —
+   bleu à gauche pour le bruit, ambre à droite pour la voix. */
+.ab__slider {
+  position: absolute;
+  z-index: 0;
+  inset: 0 50% 0 0;
+  background: var(--noise);
+  transition:
+    transform var(--ab-transition) var(--ease),
+    background-color var(--ab-transition) var(--ease);
+}
+
+.ab__group[data-side='processed'] .ab__slider {
+  transform: translateX(100%);
+  background: var(--signal);
+}
+
+.ab__option {
+  position: relative;
+  z-index: 1;
+  display: grid;
+}
+
+.ab__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ab__label {
+  display: grid;
+  place-items: center;
+  padding: var(--s-4) var(--s-4);
+  font-family: var(--font-display);
+  font-stretch: 84%;
+  font-weight: 700;
+  font-size: var(--step-2);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--ab-transition) var(--ease);
+}
+
+/*
+ * Encre claire sur le bleu, encre sombre sur l'ambre. Ce n'est pas une
+ * coquetterie : le carton sur l'ambre tombe à 1.95:1, illisible. L'ambre est
+ * une couleur claire, elle porte du texte sombre.
+ */
+.ab__group[data-side='original'] .ab__input:checked + .ab__label {
+  color: var(--card);
+}
+
+.ab__group[data-side='processed'] .ab__input:checked + .ab__label {
+  color: var(--ink);
+}
+
+/* Le focus se pose sur l'étiquette : l'input est caché, mais il reste la cible
+   réelle du clavier. */
+.ab__input:focus-visible + .ab__label {
+  outline: 2px solid var(--ink);
+  outline-offset: -6px;
+}
+
+.ab__group:disabled .ab__label {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ab__aside {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.ab__compensate {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+
+.ab__compensate input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+
+.ab__explain {
+  font-size: var(--step--2);
+  line-height: 1.5;
+  color: var(--ink-faint);
+  max-width: 44ch;
+}
+
+.ab__match {
+  color: var(--ink-muted);
+  white-space: nowrap;
+}

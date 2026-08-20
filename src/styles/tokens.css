@@ -1,0 +1,90 @@
+/*
+ * Le sujet est un instrument de mesure, pas une startup.
+ * Fond carton, filets d'un pixel, angles vifs, aucune ombre. Toute la couleur
+ * est réservée à une seule chose : dire lequel des deux signaux on écoute.
+ */
+
+:root {
+  /* ── Palette ─────────────────────────────────────────────────────────── */
+  --card: #dddcd4; /* gris carton, fond de page */
+  --ink: #16181a; /* texte */
+  --rule: #a8a69c; /* filets, séparateurs */
+  --noise: #3f6795; /* bleu froid — le bruit, l'avant */
+  --signal: #d98e12; /* ambre de vumètre — la voix, l'après */
+  --alert: #a33520;
+
+  /* Surfaces dérivées. Le carton s'éclaircit pour les encarts, s'assombrit
+     pour les creux — jamais d'ombre portée, c'est du papier, pas du plastique. */
+  --paper: #e7e6df;
+  --paper-deep: #d1d0c7;
+  --well: #c6c5bb;
+
+  /* Encres secondaires. Toutes tiennent 4.5:1 sur le carton : une légende de
+     onze pixels est du texte, pas de la décoration. */
+  --ink-muted: #5c5f61;
+  --ink-faint: #5f6162;
+
+  /* Filet renforcé pour les bordures qui délimitent un contrôle : elles doivent
+     tenir 3:1, contrairement aux séparateurs décoratifs. */
+  --rule-strong: #767469;
+
+  /* Versions assombries du bleu et de l'ambre, pour le TEXTE uniquement.
+     L'ambre de vumètre est magnifique en aplat et illisible en petit corps :
+     1.95:1 sur le carton. Les aplats gardent --noise / --signal, les chiffres
+     prennent ces variantes-ci. */
+  --noise-ink: #3a5f8a;
+  --signal-ink: #875603;
+
+  /* Teintes de travail, pour les fonds et les états. */
+  --noise-wash: #3f679514;
+  --noise-line: #3f679540;
+  --signal-wash: #d98e1218;
+  --signal-line: #d98e1245;
+  --alert-wash: #a3352014;
+
+  /* ── Typographie ─────────────────────────────────────────────────────── */
+  --font-display: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-text: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Toute mesure — dB, LUFS, Hz, secondes — passe par celle-ci. Sans exception. */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --step--2: 0.6875rem;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.125rem;
+  --step-2: clamp(1.375rem, 1.2rem + 0.85vw, 1.875rem);
+  --step-3: clamp(1.875rem, 1.4rem + 2.2vw, 3rem);
+  --step-4: clamp(2.5rem, 1.5rem + 4.6vw, 5.25rem);
+
+  /* ── Mesures ─────────────────────────────────────────────────────────── */
+  --shell: 78rem;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: 6.5rem;
+
+  --hair: 1px solid var(--rule);
+  --hair-ink: 1px solid var(--ink);
+
+  /* ── Mouvement ───────────────────────────────────────────────────────── */
+  /*
+   * La bascule A/B est simultanée au crossfade audio — aucun délai. Sa durée,
+   * elle, est celle de l'œil et non de l'oreille : 12 ms de couleur ne se
+   * verraient pas passer, et il faut que ça se voie passer (cf. docs/design.md).
+   */
+  --ab-transition: 120ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ab-transition: 0ms;
+  }
+}

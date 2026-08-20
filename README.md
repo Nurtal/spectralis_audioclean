@@ -43,6 +43,13 @@ dans son navigateur**, et il compare l'avant/après en A/B instantané avec les 
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
+├── vitest.config.ts
+├── .github/
+│   └── workflows/
+│       └── deploy.yml              # build + publication GitHub Pages
+├── scripts/
+│   ├── copy-rnnoise.mjs            # postinstall : WASM → public/
+│   └── make-samples.sh             # fabrique les extraits de démo
 ├── public/
 │   ├── samples/                    # 3 extraits de démo (~20 s, mp3 64 kbps mono)
 │   │   ├── interview-clim.mp3      #   ronflement de climatisation
@@ -76,8 +83,9 @@ dans son navigateur**, et il compare l'avant/après en A/B instantané avec les 
 │   │   ├── rnnoise/
 │   │   │   ├── loader.ts           #   chargement paresseux du module WASM
 │   │   │   └── rnnoise.ts          #   wrapper : Float32Array → Float32Array
-│   │   └── encode/
-│   │       └── wav.ts              #   AudioBuffer → Blob WAV 16 bits PCM
+│   │   ├── encode/
+│   │   │   └── wav.ts              #   AudioBuffer → Blob WAV 16 bits PCM
+│   │   └── __tests__/              #   Vitest, node, sans DOM
 │   │
 │   ├── workers/
 │   │   ├── process.worker.ts       #   reçoit les samples, exécute pipeline + analyses
@@ -109,9 +117,11 @@ dans son navigateur**, et il compare l'avant/après en A/B instantané avec les 
 │   │
 │   ├── lib/
 │   │   ├── constants.ts            #   MAX_DURATION_S, TARGET_LUFS, SAMPLE_RATE…
-│   │   └── format.ts               #   formatage dB, LUFS, durées
+│   │   ├── format.ts               #   formatage dB, LUFS, durées
+│   │   └── canvas.ts               #   devicePixelRatio, couleurs, animation
 │   │
 │   └── styles/
+│       ├── fonts.css               #   @font-face auto-hébergés, latin seul
 │       ├── tokens.css              #   variables CSS (cf. §8)
 │       ├── base.css                #   reset, typo, layout de base
 │       └── components/*.css
@@ -120,6 +130,11 @@ dans son navigateur**, et il compare l'avant/après en A/B instantané avec les 
     ├── dsp-notes.md                # choix d'algos, constantes, sources
     └── design.md                   # direction visuelle, décisions et refus
 ```
+
+Deux écarts par rapport à ce plan, argumentés dans `docs/dsp-notes.md` §5 :
+`analysis/stft.ts` n'existe pas — ses deux usagers voulaient des choses trop
+différentes — et `lib/canvas.ts` a été ajouté, partagé par la waveform et le
+spectrogramme.
 
 ---
 
@@ -284,29 +299,116 @@ erreurs disent quoi faire, pas pardon.
 
 ---
 
-## 10. Commandes
+## 10. Lancer le site
+
+**Prérequis** : Node 20 ou plus (développé sous 22), npm 10.
 
 ```bash
-npm install
-npm run dev        # serveur de dev
-npm run build      # → dist/
-npm run preview    # vérifier le build statique
-npm run typecheck
-npm run test       # tests des modules audio/ (Vitest, node, sans DOM)
+git clone git@github.com:Nurtal/spectralis_audioclean.git
+cd spectralis_audioclean
+npm install        # le postinstall copie RNNoise dans public/wasm/
+npm run dev        # → http://localhost:5173
 ```
 
-**Tests à écrire en priorité** — `audio/` est du TS pur, donc testable directement :
-FFT (contre une DFT naïve), encodage WAV (relire l'en-tête), LUFS (contre un signal de
-référence à -23 LUFS), et un round-trip du gate spectral sur du bruit blanc pur
-(sortie ≈ silence).
+`npm install` déclenche `scripts/copy-rnnoise.mjs`, qui place la glue Emscripten et le
+binaire `.wasm` dans `public/wasm/rnnoise/`. Ces fichiers ne sont pas versionnés : ils
+viennent de `@jitsi/rnnoise-wasm`. Si l'installation échoue, le site démarre quand même
+et bascule sur le gate spectral — la démo reste entière, seul le mode « Neural » manque.
+
+### Toutes les commandes
+
+```bash
+npm run dev        # serveur de dev, rechargement à chaud
+npm run build      # typecheck + bundle → dist/
+npm run preview    # sert dist/ pour vérifier le build statique
+npm run typecheck  # tsc --noEmit
+npm run test       # tests des modules audio/ (Vitest, node, sans DOM)
+npm run test:watch
+```
+
+### Regénérer les extraits de démonstration
+
+Les trois fichiers de `public/samples/` sont versionnés ; on ne les reconstruit que pour
+les remplacer. Demande un `ffmpeg` compilé avec `libflite` et `libmp3lame` :
+
+```bash
+bash scripts/make-samples.sh
+```
+
+Ce sont des **bouchons synthétiques** — voix de synthèse anglophone, bruits construits au
+filtre. Calibrés et reproductibles, mais à remplacer par de vraies prises françaises
+avant une mise en ligne commerciale (cf. `docs/design.md` §8).
+
+### Tests
+
+`audio/` est du TS pur, donc testable directement : FFT (contre une DFT naïve), encodage
+WAV (relire l'en-tête), LUFS (contre un signal de référence à -23 LUFS), et un round-trip
+du gate spectral sur du bruit blanc pur (sortie ≈ silence). Le détail de ce qui est
+couvert est dans `docs/dsp-notes.md` §6.
 
 ---
 
 ## 11. Vérification finale
 
-- [ ] Onglet réseau : aucune requête sortante ne transporte d'audio, y compris après traitement.
-- [ ] Le site fonctionne servi depuis un simple `file://`-like static host, sans en-têtes spéciaux.
-- [ ] La bascule A/B ne produit aucun clic, à volume compensé.
-- [ ] Un fichier de 90 s est traité en moins de 5 s sur une machine milieu de gamme.
-- [ ] Un fichier non supporté, trop long, ou trop lourd produit un message utile.
-- [ ] Lighthouse : perf > 90, a11y = 100.
+- [x] Onglet réseau : aucune requête sortante ne transporte d'audio, y compris après traitement.
+      *Vérifié : 0 requête hors origine, 0 corps de requête, sur toute la session.*
+- [x] Le site fonctionne servi depuis un simple `file://`-like static host, sans en-têtes spéciaux.
+      *Vérifié via `python -m http.server`, dans un sous-dossier, WASM compris.*
+- [x] La bascule A/B ne produit aucun clic, à volume compensé.
+      *Mesuré : pendant le fondu la sortie varie ×1.15 la pente naturelle du signal,
+      contre ×31 en coupure sèche.*
+- [x] Un fichier de 90 s est traité en moins de 5 s sur une machine milieu de gamme.
+      *3.3 s dans le navigateur, dont 2.5 s de calcul. Détail par étage dans
+      `docs/dsp-notes.md` §4.*
+- [x] Un fichier non supporté, trop long, ou trop lourd produit un message utile.
+- [x] Lighthouse : perf > 90, a11y = 100.
+      *Relevé : performance 97, accessibilité 100, bonnes pratiques 100, SEO 100,
+      décalage cumulé nul.*
+
+Le mesureur de loudness et celui de crête vraie ont été confrontés à `ffmpeg -af ebur128`
+sur trois signaux de référence : 0.04 LU et 0.09 dB d'écart au maximum.
+
+---
+
+## 12. Déploiement — GitHub Pages
+
+Le site est publié automatiquement à chaque poussée sur `main`, par le workflow
+`.github/workflows/deploy.yml`. Aucune étape manuelle.
+
+**→ https://nurtal.github.io/spectralis_audioclean/**
+
+```
+push sur main
+  └─▶ npm ci            (postinstall : copie de RNNoise)
+  └─▶ npm run typecheck
+  └─▶ npm run test      un test rouge bloque le déploiement
+  └─▶ npm run build     → dist/
+  └─▶ upload-pages-artifact + deploy-pages
+```
+
+### Pourquoi ça marche sur Pages sans rien configurer
+
+- **`base: './'`** dans `vite.config.ts` : tous les chemins émis sont relatifs, le site
+  fonctionne aussi bien à la racine d'un domaine que dans le sous-chemin
+  `/spectralis_audioclean/` de Pages. Le chargeur RNNoise résout son URL contre
+  `document.baseURI`, pas contre une racine supposée.
+- **Pas de `SharedArrayBuffer`**, donc pas d'en-têtes COOP/COEP à poser — ce que Pages ne
+  permet de toute façon pas.
+- **Aucun backend** : il n'y a rien d'autre à héberger que des fichiers.
+
+### Première activation (une seule fois)
+
+Si Pages n'est pas encore activé sur le dépôt :
+
+```bash
+gh api -X POST repos/<owner>/<repo>/pages \
+  -f 'build_type=workflow'
+```
+
+ou, dans l'interface : **Settings → Pages → Source : GitHub Actions**.
+
+### Déployer ailleurs
+
+`npm run build` produit un dossier `dist/` à servir tel quel. Netlify, Cloudflare Pages,
+un `rsync` vers un OVH mutualisé : c'est le même dossier, sans configuration serveur, et
+sans variable d'environnement.

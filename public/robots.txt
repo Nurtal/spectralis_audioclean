@@ -1,0 +1,4 @@
+# Site vitrine statique. Rien de privé, rien à cacher : tout est public,
+# et rien n'est collecté.
+User-agent: *
+Allow: /

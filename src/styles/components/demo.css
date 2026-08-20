@@ -1,0 +1,200 @@
+.demo__intro {
+  margin-top: var(--s-2);
+}
+
+.demo__file {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin-top: var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  border: var(--hair);
+  background: var(--paper-deep);
+  font-size: var(--step--2);
+  color: var(--ink-muted);
+}
+
+.demo__fileName {
+  color: var(--ink);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.demo__notice {
+  margin-top: var(--s-4);
+}
+
+.demo__retry {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.demo .progress {
+  margin-top: var(--s-5);
+}
+
+.demo__result {
+  display: grid;
+  gap: var(--s-6);
+  margin-top: var(--s-6);
+}
+
+/*
+ * Un enfant de grille vaut `min-width: auto` par défaut : sa largeur minimale
+ * de contenu peut donc pousser toute la grille — et le tableau de mesures,
+ * qui ne se plie pas, élargissait la page entière sur mobile.
+ */
+.demo__result > *,
+.demo__panels > *,
+.demo__stage > * {
+  min-width: 0;
+}
+
+.demo__stage {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.demo__panels {
+  display: grid;
+  gap: var(--s-5);
+  align-items: start;
+}
+
+@media (min-width: 62rem) {
+  .demo__panels {
+    grid-template-columns: 22rem 1fr;
+  }
+}
+
+/* ── Chaîne de traitement ──────────────────────────────────────────────── */
+
+.demo__chain {
+  display: grid;
+  align-content: start;
+}
+
+.demo__chainTitle {
+  font-family: var(--font-display);
+  font-stretch: 84%;
+  font-size: var(--step-1);
+  font-weight: 700;
+}
+
+.demo__modes {
+  padding: var(--s-4);
+  border: none;
+  border-bottom: var(--hair);
+  margin: 0;
+}
+
+.demo__legend {
+  padding: 0;
+  margin-bottom: var(--s-2);
+}
+
+.demo__modeRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--rule-strong);
+}
+
+.demo__mode {
+  display: grid;
+  place-items: center;
+  padding: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  cursor: pointer;
+  transition:
+    background-color 120ms var(--ease),
+    color 120ms var(--ease);
+}
+
+.demo__mode + .demo__mode {
+  border-left: 1px solid var(--rule-strong);
+}
+
+.demo__mode input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.demo__mode[data-checked='true'] {
+  background: var(--ink);
+  color: var(--card);
+}
+
+.demo__mode:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.demo__modeHint,
+.demo__strengthHint {
+  margin-top: var(--s-2);
+  font-size: var(--step--2);
+  line-height: 1.45;
+  color: var(--ink-faint);
+}
+
+.demo__strength {
+  padding: var(--s-4);
+  border-bottom: var(--hair);
+}
+
+.demo__strengthLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  font-size: var(--step--1);
+  margin-bottom: var(--s-2);
+}
+
+.demo__strength input[type='range'] {
+  width: 100%;
+  accent-color: var(--ink);
+}
+
+.demo__switches {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-bottom: var(--hair);
+}
+
+.demo__switches li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.demo__switch {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 var(--s-3);
+  align-items: center;
+  padding: var(--s-3) var(--s-4);
+  cursor: pointer;
+  font-size: var(--step--1);
+}
+
+.demo__switch input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+
+.demo__switchDetail {
+  grid-column: 2;
+  font-size: var(--step--2);
+  color: var(--ink-faint);
+}
+
+.demo__export {
+  padding: var(--s-4);
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.DS_Store
+*.local
+public/wasm/rnnoise/rnnoise.js
+public/wasm/rnnoise/rnnoise.wasm
+public/wasm/rnnoise/LICENSE
