@@ -264,6 +264,34 @@ plus lente.
 
 ---
 
+## 4 bis. Le contexte de lecture ne force rien
+
+Le pipeline travaille à 48 kHz parce que RNNoise l'exige. Il serait tentant
+d'imposer la même fréquence à l'`AudioContext` de lecture pour éviter un
+rééchantillonnage — c'est ce que faisait la première version, et c'est une
+faute.
+
+Sur une sortie cadencée à 44.1 kHz, `new AudioContext({ sampleRate: 48000 })`
+fait ouvrir à Chrome un flux que la couche audio du système doit reconvertir.
+Sous PulseAudio ou PipeWire, ça donne au mieux de la latence, au pire du
+**silence complet**.
+
+Le symptôme est particulièrement trompeur, parce que rien ne le signale depuis
+la page : le contexte se déclare `running`, son horloge avance en temps réel, et
+un `AnalyserNode` branché sur le graphe mesure du signal (RMS 0.13 mesuré). La
+panne est en aval de tout ce que JavaScript peut observer. Le seul indice est
+`ctx.sampleRate !== new AudioContext().sampleRate`.
+
+On laisse donc `AudioBufferSourceNode` rééchantillonner. Vérifié en rendu hors
+ligne, un tampon 48 kHz joué dans un contexte 44.1 kHz conserve sa durée à
+l'échantillon près, sa fréquence et son amplitude. Bénéfice secondaire : la
+latence de base retombe de 21 à 12 ms, ce qui rend la bascule A/B plus franche.
+
+**Règle générale** : le pipeline impose sa fréquence, la lecture prend celle de
+la machine. Les deux ne se négocient pas au même endroit.
+
+---
+
 ## 5. Écarts assumés par rapport au cahier des charges
 
 - **`analysis/stft.ts` n'existe pas.** Le gate spectral et le spectrogramme
